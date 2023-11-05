@@ -32,38 +32,43 @@ public class RSA {
 	}
 	
 	public void taoKhoa(int bits) {
-		SecureRandom r = new SecureRandom(); // Tạo 1 số random
-		BigInteger p = new BigInteger(bits, new Random()); // p độ dài là bits
-		BigInteger q = new BigInteger(bits, new Random());
+		BigInteger p = new BigInteger(bits, 100, new SecureRandom()); // p độ dài là bits
+		BigInteger q = new BigInteger(bits, 100, new SecureRandom());
 		// Tính n = p*q
 		n = p.multiply(q);
 		// Tính ph(n)đặt là t = (p-1)*(q-1)
 		BigInteger t = (p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE)));
 		boolean check = false;
 		// Thường chọn e = 65537
-		BigInteger e = new BigInteger("65537");
+		
 		do {
+			this.e = new BigInteger(1, "65537".getBytes());
 			// Kiểm tra [ t và e có UCLN là 1 ] và [ e < t ] thì e là số cùng nguyên tố với t
 			if(t.gcd(e).equals(BigInteger.ONE) && e.compareTo(t)<0) {
 				check = true;
 			}
-		}while(check == true);
+		}while(!check);
+		
 		// Ta có (e*d) % t = 1 => d
 		d = e.modInverse(t);
 	}
 	
 	// Tạo khóa công khai để mã hóa
-	public synchronized String maHoa(String thongDiep) {
+	public String maHoa(String thongDiep) {
 		// Chuyển chuỗi thongDiep thành mảng byte, mỗi byte dựa trên mã hóa ASCII 
-		BigInteger khoaCongKhai = new BigInteger(thongDiep.getBytes());
+		BigInteger khoaCongKhai = new BigInteger(1, thongDiep.getBytes());
 		// Khóa CK được tính bằng công thức sau: khoaCK = thongDiep ^ e mod n
-		return khoaCongKhai.modPow(e, getN()).toString();
+		return khoaCongKhai.modPow(e, n).toString();
 	}
 	
-	public synchronized String giaiMa(String thongDiep) {
-		 BigInteger khoaBiMat = new BigInteger(thongDiep.getBytes());
-		 // A giải mã bằng cách tính sau: khoaCongKhai ^ d mod n
-		return khoaBiMat.modPow(d, n).toString();
+//	public String giaiMa(String thongDiep) {
+//		BigInteger khoaBM = new BigInteger(thongDiep);
+//		return khoaBM.modPow(d, n).toByteArray().toString();
+//	}
+	
+	public String giaiMa(String thongDiep) {
+	    BigInteger khoaBM = new BigInteger(thongDiep);
+	    return new String(khoaBM.modPow(d, n).toByteArray());
 	}
 
 }

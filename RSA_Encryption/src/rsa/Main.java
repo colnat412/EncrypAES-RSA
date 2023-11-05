@@ -5,10 +5,11 @@ public class Main {
 		RSA rsa = new RSA();
 		// Tạo key
 		rsa.taoKhoa(1024);
-		String thongDiepDauVao = "NguyenTanLocDepTrai";
+		String thongDiepDauVao = "Nguyen Tan Loc";
+                System.out.println("Input: " +thongDiepDauVao);
 		String kqMaHoa = rsa.maHoa(thongDiepDauVao);
-		System.out.println("Kết quả mã hóa: " +kqMaHoa);
+		System.out.println("Encrypt: " +kqMaHoa);
 		String kqGiaiMa = rsa.giaiMa(kqMaHoa);
-		System.out.println("Kết quả đoạn giải mã: " +kqGiaiMa);
+		System.out.println("Output: " +kqGiaiMa);
 	}
 }
